@@ -1,0 +1,21 @@
+{
+  "name": "seemeeapp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "joi": "^17.12.3",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "mongoose": "^8.3.0"
+  }
+}
