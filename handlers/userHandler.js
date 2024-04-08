@@ -45,4 +45,19 @@ export default class UserHandler{
             return this._responseHandler.internalServerError(res, error.message || error);
         }
     }
+
+    async followUser(req, res){
+        try{
+            const request = req.body;
+            const {error} = this._helpers.validateFollowRequest(request);
+            if(error){
+                return this._handler.badRequest(res, error.message);
+            }
+            const resp = await this._usecase.followUser(request);
+        }catch(error){
+            return this._responseHandler.internalServerError(res, error.message || error);
+        }
+    }
+
+
 }
