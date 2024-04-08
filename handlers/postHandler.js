@@ -31,6 +31,9 @@ export default class PostHandler{
                   if (req.file && req.file.fieldname != "image" || req.file.fieldname != "video") {
                     return this._handler.badRequest(res, "Use image for image file key and video for video file key");
                   }
+
+                  // upload to cloudinary and save the url to request.image
+                  // request.image = cloudinary upload url;
             }
             const resp = await this._usecase.createPost(request);
             if (resp.success){
