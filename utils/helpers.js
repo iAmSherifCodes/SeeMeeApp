@@ -33,8 +33,24 @@ export const validateCreatePost = (post)=>{
   const schema = Joi.object({
     description: Joi.string().required,
     userId: Joi.string().hex().length(24).required()
-
   });
 
   return schema.validate(post, {abortEarly: false});
+}
+export const validateFollowRequest = ( follow )=> {
+  const schema = Joi.object({
+    userId: Joi.string().hex().length(24).required(),
+    follwerId: Joi.string().hex().length(24).required()
+  });
+
+  return schema.validate(post, {abortEarly: false});
+}
+
+export const validateLikePost = (likeRequest) =>{
+  const schema = Joi.object({
+    postId: Joi.string().hex().length(24).required(),
+    userId: Joi.string().hex().length(24).required()
+  });
+
+  return schema.validate(likeRequest, {abortEarly: false});
 }
