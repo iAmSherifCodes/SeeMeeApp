@@ -5,5 +5,5 @@ import PostService from "./post.js";
 
 export default {
     userService: new UserService(userRepo, env()),
-    postService: new PostService(postRepo, env())
+    postService: new PostService(postRepo, env(), userRepo)
 }
