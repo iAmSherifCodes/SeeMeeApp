@@ -3,4 +3,8 @@ export default class PostService{
         this._repo = postRepo;
         this._env = env;
     }
+
+    async createPost(post){
+        
+    }
 }
