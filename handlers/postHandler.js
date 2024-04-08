@@ -39,9 +39,11 @@ export default class PostHandler{
             if (resp.success){
                 return this._responseHandler.created(res, resp.data);
             }
-
+            return this._responseHandler.badRequest(res, "Cannot create post");
         }catch(error){
             return this._responseHandler.internalServerError(res, error.message || error);
         }
     }
+
+  
 }
