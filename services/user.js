@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
+import Post from "../models/Post.js";
 
 export default class UserService{
     constructor(repo, env){
@@ -109,6 +110,69 @@ export default class UserService{
             return {
                 success:false,
                 error: error.message
+            };
+        }
+    }
+    
+    async followUser(follow){
+        try{
+            const user = this._repo.getUserById(follow.userId);
+            if(!user){
+                return{
+                    success: false,
+                    error: "User not found"
+                }; 
+            }
+            const follower = this._repo.getUserById(follow.followerId);
+            const followerUsername = follower.username;
+            if (user.followers.some(follower => follower.username === followerUsername)) {
+                throw new Error('Follower already exists');
+            }
+            user.followers.push({ username: followerUsername });
+            const resp = await this._repo.updateUserById(follow.userId, {
+                followers: user.followers,
+            });
+            return {
+                success: true,
+                data: resp
+            }
+        }catch(error){
+            return {
+                success: false,
+                error: error.message,
+            };
+        }
+    }
+
+    async getUserFollowers(userId) {
+        try {
+            const user = await this._repo.getUserById(userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+            return user.followers.map(follower => follower.username);
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message,
+            };
+        }
+    }
+
+    async getAllPostsFromFollowers(userId, page = 1, limit = 10) {
+        try {
+            const followerUsernames = await this.getUserFollowers(userId);
+            const options = {
+                page: parseInt(page),
+                limit: parseInt(limit),
+                populate: { path: 'userId', select: 'username' }
+            };
+            const posts = await Post.paginate({ userId: { $in: followerUsernames } }, options);
+            return posts;
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message,
             };
         }
     }
