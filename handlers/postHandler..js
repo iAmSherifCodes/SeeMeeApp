@@ -20,7 +20,22 @@ export default class PostHandler{
             if(error){
                 return this._responseHandler.badRequest(res, error.message);
             }
+            if(req.file){
+                if (!req.file.originalname.match(/\.(JPG|jpg|jpeg|JPEG|PNG|png|mp4|MP4|mov|MOV|gif|GIF|avi|AVI)$/)) {
+                    return this._handler.badRequest(res, "Invalid Attachment Format");
+                }
+                if (req.fileValidationError) {
+                    return this._handler.badRequest(res, "Incorrect file type");
+                  }
+          
+                  if (req.file && req.file.fieldname != "image" || req.file.fieldname != "video") {
+                    return this._handler.badRequest(res, "Use image for image file key and video for video file key");
+                  }
+            }
             const resp = await this._usecase.createPost(request);
+            if (resp.success){
+                return this._responseHandler.created(res, resp.data);
+            }
 
         }catch(error){
             return this._responseHandler.internalServerError(res, error.message || error);
