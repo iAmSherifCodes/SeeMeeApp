@@ -19,7 +19,7 @@ export default class PostService{
             const postData = await this._repo.createPost(post);
             return {
                 success: true,
-                postData
+                data: postData
             }
         }catch(error){
             console.log(error.message);
@@ -32,16 +32,25 @@ export default class PostService{
 
     async likePost(postId, userId) {
         try {
-            const post = await Post.findById(postId);
+            const post = await this._repo.getPostById(postId);
             if (!post) {
                 throw new Error('Post not found');
             }
-            if (post.likes.includes(userId)) {
-                throw new Error('Post already liked');
+            const existingLike = post.like.find(like => like.userId.toString() === userId);
+            if (existingLike) {
+                post.like.push({userId, number: -1});
+                const resp = await this._repo.updatePostById(post.id);
+                return {
+                    success: true,
+                    data: resp
+                }
             }
-            post.likes.push(userId);
-            await post.save();
-            return post;
+            post.like.push({ userId, number: 1 });
+            const resp = await this._repo.updatePostById(post.id);
+            return {
+                success: true,
+                data: resp
+            }
         } catch (error) {
             return {
                 success: false,
