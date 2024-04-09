@@ -19,10 +19,18 @@ const Post = new mongoose.Schema({
         type: String,
         required: false
     },
-    like: {
-        type: Number,
-        default: 0
-    },
+    like: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        number: {
+            type: Number,
+            required: true,
+        },
+        _id: false
+    }],
     comments: [
         {
             description: {
