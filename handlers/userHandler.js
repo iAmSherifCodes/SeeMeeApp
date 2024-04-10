@@ -5,10 +5,10 @@ export default class UserHandler{
         this._responseHandler = responseHandler;
     }
 
-    async registerRequest(req, res){
+    async register(req, res){
         try{
             const request = req.body;
-            const {error} = this._helpers.validateRegisterRequest(request);
+            const {error} = this._helpers.validateUserRegisterRequest(request);
             if(error){
                 return this._responseHandler.badRequest(res, error.message);
             }
@@ -26,19 +26,19 @@ export default class UserHandler{
         }
     }
 
-
-    async loginRequest(req, res){
+    async login(req, res){
         try{
             const request = req.body;
             const { error } = this._helpers.validateUserLoginRequest(request);
             if (error){
-                return this._handler.badRequest(res, error.message);
+                return this._responseHandler.badRequest(res, error);
             }
             const resp = await this._usecase.userLogin(request);
+            console.log(resp);
             if (resp.success) {
-                return this._handler.success(res, resp.data);
+                return this._responseHandler.success(res, resp.data);
             } else {
-                return this._handler.badRequest(res, resp.error);
+                return this._responseHandler.badRequest(res, resp.error);
             }
         }catch(error){
             console.log(error.message);
@@ -51,9 +51,14 @@ export default class UserHandler{
             const request = req.body;
             const {error} = this._helpers.validateFollowRequest(request);
             if(error){
-                return this._handler.badRequest(res, error.message);
+                return this._responseHandler.badRequest(res, error.message);
             }
             const resp = await this._usecase.followUser(request);
+            if(resp.success){
+                return this._responseHandler.success(res, resp.data);
+            } else {
+                return this._responseHandler.badRequest(res, resp.error);
+            }
         }catch(error){
             return this._responseHandler.internalServerError(res, error.message || error);
         }
