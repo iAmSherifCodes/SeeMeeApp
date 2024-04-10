@@ -1,4 +1,3 @@
-import { required } from "joi";
 import mongoose from "mongoose";
 
 const Post = new mongoose.Schema({
@@ -19,7 +18,7 @@ const Post = new mongoose.Schema({
         type: String,
         required: false
     },
-    like: [{
+    likes: [{
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
@@ -33,14 +32,14 @@ const Post = new mongoose.Schema({
     }],
     comments: [
         {
-            description: {
+            comment: {
                 type: String,
                 required: false
             },
             userId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "User",
-                required: true,
+                required: false,
             },
             _id: false
         }
