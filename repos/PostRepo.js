@@ -1,17 +1,9 @@
-import Post from "../models/Post";
+import Post from "../models/Post.js";
 
 export default class PostRepo{
     async createPost (post){
         try {
             const data = await Post.create(post);
-
-            await Post.findByIdAndUpdate(
-            data.id,
-            {
-                $set: { verification: verification.id },
-            },
-            { new: true }
-            );
     
             return data ? data.toJSON() : null;
         } catch (error) {
