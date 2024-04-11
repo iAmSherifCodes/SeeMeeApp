@@ -12,7 +12,6 @@ const User = new mongoose.Schema(
       type: String,
       required: true,
     },
-    //username
     followers: [{username:{
       type: String
     }, _id: false}],
