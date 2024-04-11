@@ -66,7 +66,7 @@ export default class PostService {
         const resp = await this._repo.updatePostById(postId, {
           likes: post.likes,
         });
-        postAuthor.notifications.push({description: "Someone liked your post"});
+        postAuthor.notifications.push({description: `${user.username} liked your post`});
         await this._userRepo.updateUserById(post.userId, {
           notifications: postAuthor.notifications,
         });
@@ -85,7 +85,7 @@ export default class PostService {
       const resp = await this._repo.updatePostById(postId, {
         likes: post.likes,
       });
-      postAuthor.notifications.push({description: "Someone liked your post"});
+      postAuthor.notifications.push({description: `${user.username} liked your post`});
       await this._userRepo.updateUserById(post.userId, {
         notifications: postAuthor.notifications,
       });
@@ -125,7 +125,7 @@ export default class PostService {
         const resp = await this._repo.updatePostById(post.id, {
           comments: post.comments,
         });
-        postAuthor.notifications.push({description: "Someone commented on your post"});
+        postAuthor.notifications.push({description: `${user.username} commented your post`});
         await this._userRepo.updateUserById(post.userId, {
           notifications: postAuthor.notifications,
         });
