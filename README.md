@@ -34,16 +34,17 @@ The API documentation is intended for developers who  want to interact with the 
 
 ### Sample Response Body
     {
-        "success": true,
-        "data": {
-            "username": "John Doe",
-            "password": "$2b$10$SZAP/znq82HNOH15C6Ahi.XTPnU8NgV4eewK6vO4pNmscLRMCZxlm",
-            "salt": "$2b$10$SZAP/znq82HNOH15C6Ahi.",
-            "followers": [],
-            "createdAt": "2024-04-11T09:32:49.350Z",
-            "updatedAt": "2024-04-11T09:32:49.350Z",
-            "id": "6617ae4125e9421cf1a316ba"
-        }
+    "success": true,
+    "data": {
+        "username": "idris doe",
+        "password": "$2b$10$GdZ6nFcNFeJQfOb0CrY7fuyqS6Lw4UBYdzKbs8SGjCrRFGb0vJ0tm",
+        "salt": "$2b$10$GdZ6nFcNFeJQfOb0CrY7fu",
+        "followers": [],
+        "notifications": [],
+        "createdAt": "2024-04-11T17:42:52.758Z",
+        "updatedAt": "2024-04-11T17:42:52.758Z",
+        "id": "6618211c54b573b9baea8cc4"
+    }
     }
 
 ## Login User
