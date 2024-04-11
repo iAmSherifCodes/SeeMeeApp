@@ -15,6 +15,9 @@ const User = new mongoose.Schema(
     followers: [{username:{
       type: String
     }, _id: false}],
+    notifications: [{description:{
+      type: String
+    }, _id: false}],
     salt: {
       type: String,
       required: true,
