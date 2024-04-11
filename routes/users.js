@@ -1,18 +1,19 @@
 import express from "express";
+import handlers from "../handlers/index.js";
+import verifyAuth from "../middleware/verifyAuth.js";
+const userHandler = handlers.userHandler;
 
-var router = express.Router({
-  mergeParams: true,
+var router = express.Router();
+
+router.post("/register", (req, res) => {
+  userHandler.register(req, res);
 });
 
-function UserController(){
-  console.log("here");
-  router.get('/hi', (req, res, next) => {
-    
-    console.log("hit");
-    res.send('respond with a resource');
-  });
+router.post("/login", (req, res) => {
+  userHandler.login(req, res);
+});
 
-  return router;
-}
-
-export default UserController;
+router.post("/follow", verifyAuth, (req, res) => {
+  userHandler.followUser(req, res);
+});
+export default router;
