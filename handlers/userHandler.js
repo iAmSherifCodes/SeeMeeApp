@@ -34,7 +34,6 @@ export default class UserHandler{
                 return this._responseHandler.badRequest(res, error);
             }
             const resp = await this._usecase.userLogin(request);
-            console.log(resp);
             if (resp.success) {
                 return this._responseHandler.success(res, resp.data);
             } else {
