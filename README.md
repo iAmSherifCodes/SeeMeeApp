@@ -13,6 +13,10 @@ The API documentation is intended for developers who  want to interact with the 
  - 
  POST (https://{hostname}/users/register)
 
+
+### Sample Request Header
+    'Content-Type: application/json'
+
 ### Sample Request Body
     {
         "username": "John Doe",
@@ -37,6 +41,9 @@ The API documentation is intended for developers who  want to interact with the 
  - This function logs users in the platform.
  - 
    POST (https://{hostname}/users/login)
+
+### Sample Request Header
+    'Content-Type: application/json'
 
 ### Sample Request Body
     {
