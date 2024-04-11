@@ -1,61 +1,197 @@
-import UserRepo from "../repos/UserRepo";
+export default class PostService {
+  constructor(postRepo, env, userRepo) {
+    this._repo = postRepo;
+    this._env = env;
+    this._userRepo = userRepo;
+  }
 
-export default class PostService{
-    constructor(postRepo, env, userRepo){
-        this._repo = postRepo;
-        this._env = env;
-        this._userRepo = userRepo;
+  async createPost(post) {
+    try {
+      const user = await this._userRepo.getUserById(post.userId);
+      if (!user) {
+        return {
+          success: false,
+          error: "User not found",
+        };
+      }
+      const postData = await this._repo.createPost(post);
+      return {
+        success: true,
+        data: postData,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        success: false,
+        error: error.message,
+      };
     }
+  }
 
-    async createPost(post){
-        try{
-            const user = await this._userRepo.getUserById(post.userId);
-            if(!user){
-                return {
-                    success: false,
-                    error: "User not found"
-                };
-            }
-            const postData = await this._repo.createPost(post);
-            return {
-                success: true,
-                data: postData
-            }
-        }catch(error){
-            console.log(error.message);
-            return {
-                success: false,
-                error: error.message,
-              };
-        }
-    }
+  async likePost(postId, userId, currentUser) {
+    try {
+      const user = await this._userRepo.getUserById(userId);
 
-    async likePost(postId, userId) {
-        try {
-            const post = await this._repo.getPostById(postId);
-            if (!post) {
-                throw new Error('Post not found');
-            }
-            const existingLike = post.like.find(like => like.userId.toString() === userId);
-            if (existingLike) {
-                post.like.push({userId, number: -1});
-                const resp = await this._repo.updatePostById(post.id);
-                return {
-                    success: true,
-                    data: resp
-                }
-            }
-            post.like.push({ userId, number: 1 });
-            const resp = await this._repo.updatePostById(post.id);
-            return {
-                success: true,
-                data: resp
-            }
-        } catch (error) {
-            return {
-                success: false,
-                error: error.message,
-            }
-        }
+      if (!user) {
+        return {
+          success: false,
+          error: "User not found",
+        };
+      }
+      const post = await this._repo.getPostById(postId);
+      if (!post) {
+        return {
+          success: false,
+          error: "Post not found",
+        };
+      }
+      // check if user has already liked
+      let likeExists;
+      console.log(post.likes.length > 0);
+      if (post.likes.length > 0) {
+        likeExists = post.likes.some((like) => {
+          if (user.username === currentUser && like.username === "you") {
+            return true;
+          } else {
+            return like.username === user.username;
+          }
+        });
+      }
+
+      if (likeExists && post.likes.length > 0) {
+        post.likes = post.likes.filter(
+          (like) => like.username !== user.username && like.username !== "you"
+        );
+        const resp = await this._repo.updatePostById(postId, {
+          likes: post.likes,
+        });
+        return {
+          success: true,
+          data: resp,
+        };
+      }
+
+      if (user.username === currentUser) {
+        post.likes.push({ username: "you" });
+      } else {
+        post.likes.push({ username: user.username });
+      }
+
+      const resp = await this._repo.updatePostById(postId, {
+        likes: post.likes,
+      });
+
+      return {
+        success: true,
+        data: resp,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
     }
+  }
+
+  async commentPost(postId, userId, comment) {
+    try {
+      const user = await this._userRepo.getUserById(userId);
+      if (!user) {
+        return {
+          success: false,
+          error: "User not found",
+        };
+      }
+      const post = await this._repo.getPostById(postId);
+      if (!post) {
+        return {
+          success: false,
+          error: "Post not found",
+        };
+      }
+      if (comment) {
+        post.comments.push({ comment: comment, author: user.username });
+        const resp = await this._repo.updatePostById(post.id, {
+          comments: post.comments,
+        });
+        return {
+          success: true,
+          data: resp,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async viewNumberOfLikes(postId) {
+    try {
+      const post = await this._repo.getPostById(postId);
+      if (!post) {
+        return {
+          success: false,
+          error: "Post not found",
+        };
+      }
+      const numberOfLikes = post.likes.length;
+      return {
+        success: true,
+        data: numberOfLikes,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async viewComments(postId, page = 1, limit = 10) {
+    try {
+      const post = await this._repo.getPostById(postId);
+      if (!post) {
+        return {
+          success: false,
+          error: "Post not found",
+        };
+      }
+      const options = {
+        page: parseInt(page),
+        limit: parseInt(limit),
+      };
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const results = {};
+
+      if (endIndex < post.comments.length) {
+        results.next = {
+          page: page + 1,
+          limit: limit,
+        };
+      }
+
+      if (startIndex > 0) {
+        results.previous = {
+          page: page - 1,
+          limit: limit,
+        };
+      }
+
+      results.results = post.comments.slice(startIndex, endIndex);
+
+      return {
+        success: true,
+        data: results,
+      };
+      
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message,
+          };
+    }
+  }
 }
