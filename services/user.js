@@ -47,8 +47,10 @@ export default class UserService{
 
         }catch(error){
             console.log(error.message);
-            throw error;
-        }
+            return {
+                success: false,
+                error: error.message,
+              };        }
     }
 
     async userLogin(user){
@@ -65,15 +67,15 @@ export default class UserService{
             if(compare){
                 const token = jwt.sign(
                     {
-                      email: businessData.email,
-                      id: businessData.id,
+                      username: userData.username,
+                      id: userData.id,
                     },
-                    env().JWT_SECRET,
+                    this._env.JWT_SECRET,
                     { expiresIn: "1d" }
                   );
                   delete userData.password;
                   userData.token = token;
-                  return{
+                  return {
                     success: true,
                     data: userData
                   };
@@ -116,26 +118,41 @@ export default class UserService{
     
     async followUser(follow){
         try{
-            const user = this._repo.getUserById(follow.userId);
+            const user = await this._repo.getUserById(follow.userId);
             if(!user){
                 return{
                     success: false,
                     error: "User not found"
                 }; 
-            }
-            const follower = this._repo.getUserById(follow.followerId);
+            };
+            const follower = await this._repo.getUserById(follow.followerId);
+            if(!follower){
+                return{
+                    success: false,
+                    error: "Follower not found"
+                }; 
+            };
             const followerUsername = follower.username;
-            if (user.followers.some(follower => follower.username === followerUsername)) {
-                throw new Error('Follower already exists');
+            
+
+            const exists = user.followers.some((follower) => {
+                return follower.username === followerUsername;
+            });
+            
+            if (exists) {
+                return {
+                    success: false,
+                    error: "Follower already exists"
+                };
             }
-            user.followers.push({ username: followerUsername });
+            user.followers.push({username: followerUsername});
             const resp = await this._repo.updateUserById(follow.userId, {
                 followers: user.followers,
             });
             return {
                 success: true,
                 data: resp
-            }
+            };
         }catch(error){
             return {
                 success: false,
@@ -148,7 +165,10 @@ export default class UserService{
         try {
             const user = await this._repo.getUserById(userId);
             if (!user) {
-                throw new Error('User not found');
+                return{
+                    success: false,
+                    error: "User not found"
+                };
             }
             return user.followers.map(follower => follower.username);
         } catch (error) {
@@ -161,6 +181,13 @@ export default class UserService{
 
     async getAllPostsFromFollowers(userId, page = 1, limit = 10) {
         try {
+            const user = await this._repo.getUserById(userId);
+            if (!user) {
+                return{
+                    success: false,
+                    error: "User not found"
+                };
+            }
             const followerUsernames = await this.getUserFollowers(userId);
             const options = {
                 page: parseInt(page),
@@ -168,7 +195,10 @@ export default class UserService{
                 populate: { path: 'userId', select: 'username' }
             };
             const posts = await Post.paginate({ userId: { $in: followerUsernames } }, options);
-            return posts;
+            return{
+                success: true,
+                data: posts
+            };
         } catch (error) {
             return {
                 success: false,
