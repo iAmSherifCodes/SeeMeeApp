@@ -45,9 +45,10 @@ export default class PostService {
           error: "Post not found",
         };
       }
+
+      const postAuthor = await this._userRepo.getUserById(post.userId);
       // check if user has already liked
       let likeExists;
-      console.log(post.likes.length > 0);
       if (post.likes.length > 0) {
         likeExists = post.likes.some((like) => {
           if (user.username === currentUser && like.username === "you") {
@@ -65,6 +66,10 @@ export default class PostService {
         const resp = await this._repo.updatePostById(postId, {
           likes: post.likes,
         });
+        postAuthor.notifications.push({description: "Someone liked your post"});
+        await this._userRepo.updateUserById(post.userId, {
+          notifications: postAuthor.notifications,
+        });
         return {
           success: true,
           data: resp,
@@ -79,6 +84,10 @@ export default class PostService {
 
       const resp = await this._repo.updatePostById(postId, {
         likes: post.likes,
+      });
+      postAuthor.notifications.push({description: "Someone liked your post"});
+      await this._userRepo.updateUserById(post.userId, {
+        notifications: postAuthor.notifications,
       });
 
       return {
@@ -109,10 +118,16 @@ export default class PostService {
           error: "Post not found",
         };
       }
+      const postAuthor = await this._userRepo.getUserById(post.userId);
+
       if (comment) {
         post.comments.push({ comment: comment, author: user.username });
         const resp = await this._repo.updatePostById(post.id, {
           comments: post.comments,
+        });
+        postAuthor.notifications.push({description: "Someone commented on your post"});
+        await this._userRepo.updateUserById(post.userId, {
+          notifications: postAuthor.notifications,
         });
         return {
           success: true,
