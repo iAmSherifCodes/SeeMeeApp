@@ -4,6 +4,15 @@ SeeMee is a social media application where users can post, see, and interact wit
 
 The API documentation is intended for developers who  want to interact with the application's backend services.
 
+## Project Setup Description
+- Fork and Clone Repo
+- Open the file in your favourite IDE
+- cd seeMeeApp or make sure your cd in the project's root directory where you can find the package.json
+- npm i -> to install dependencies
+- npm run dev -> to run the code
+
+## API Documentation
+
 #### There are two controllers User and Post
 
 # USER API
