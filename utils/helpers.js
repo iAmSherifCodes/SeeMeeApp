@@ -12,7 +12,6 @@ export const validateUserRegisterRequest = (user) =>{
         .required(),
     });
     return schema.validate(user, { abortEarly: false });
-
 }
 
 export const validateUserLoginRequest = (user) =>{
@@ -31,8 +30,8 @@ export const validateUserLoginRequest = (user) =>{
 
 export const validateCreatePost = (post)=>{
   const schema = Joi.object({
-    description: Joi.string().required,
-    userId: Joi.string().hex().length(24).required()
+    description: Joi.string().required(),
+    userId: Joi.string().hex().length(24).required(),
   });
 
   return schema.validate(post, {abortEarly: false});
@@ -40,10 +39,10 @@ export const validateCreatePost = (post)=>{
 export const validateFollowRequest = ( follow )=> {
   const schema = Joi.object({
     userId: Joi.string().hex().length(24).required(),
-    follwerId: Joi.string().hex().length(24).required()
+    followerId: Joi.string().hex().length(24).required()
   });
 
-  return schema.validate(post, {abortEarly: false});
+  return schema.validate(follow, {abortEarly: false});
 }
 
 export const validateLikePost = (likeRequest) =>{
@@ -53,4 +52,30 @@ export const validateLikePost = (likeRequest) =>{
   });
 
   return schema.validate(likeRequest, {abortEarly: false});
+}
+
+export const validateComment = (comment) =>{
+  const schema = Joi.object({
+    postId: Joi.string().hex().length(24).required(),
+    userId: Joi.string().hex().length(24).required(),
+    comment: Joi.string().required()
+  });
+
+  return schema.validate(comment, {abortEarly: false});
+}
+
+export const validateViewNumberOfLikes = (view) =>{
+  const schema = Joi.object({
+    postId: Joi.string().hex().length(24).required()
+  });
+
+  return schema.validate(view, {abortEarly: false});
+}
+
+export const validateViewComments = (view) =>{
+  const schema = Joi.object({
+    postId: Joi.string().hex().length(24).required()
+  });
+
+  return schema.validate(view, {abortEarly: false});
 }
