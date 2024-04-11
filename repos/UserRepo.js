@@ -1,18 +1,9 @@
-import User from "../models/User";
+import User from "../models/User.js";
 
 export default class UserRepo{
     async createUser (user){
         try {
             const data = await User.create(user);
-
-            await User.findByIdAndUpdate(
-            data.id,
-            {
-                $set: { verification: verification.id },
-            },
-            { new: true }
-            );
-    
             return data ? data.toJSON() : null;
         } catch (error) {
             throw error;
@@ -21,7 +12,7 @@ export default class UserRepo{
 
     async getUserByUsername(username){
         try {
-            const data = await User.findByOne({username});
+            const data = await User.findOne({username});
             return data ? data.toJSON() : null;
           } catch (error) {
             throw error;
