@@ -16,4 +16,12 @@ router.post("/comment", (req, res)=>{
   postHandler.commentPost(req, res);
 });
 
+router.get("/viewNumberOfLikes", (req, res)=>{
+  postHandler.viewNumberOfLikes(req, res);
+});
+
+router.get("/viewComments", (req, res)=>{
+  postHandler.viewComments(req, res);
+});
+
 export default router;
