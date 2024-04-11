@@ -4,7 +4,9 @@ import { validateUserRegisterRequest,
          validateCreatePost,
          validateFollowRequest,
          validateLikePost,
-        validateViewNumberOfLikes }
+        validateViewNumberOfLikes,
+        validateViewComments
+     }
          from "../utils/helpers.js"
 import UserHandler from "./userHandler.js";
 import usecase from "../services/index.js"
@@ -17,7 +19,9 @@ const helpers = { validateUserLoginRequest,
                   validateCreatePost,
                   validateFollowRequest,
                   validateLikePost,
-                validateViewNumberOfLikes};
+                validateViewNumberOfLikes,
+                validateViewComments
+            };
 
 export default{
     userHandler: new UserHandler(usecase.userService, helpers, ResponseHandler),
