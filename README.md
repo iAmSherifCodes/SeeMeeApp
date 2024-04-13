@@ -58,7 +58,7 @@ The API documentation is intended for developers who  want to interact with the 
 ### Sample Request Body
     {
         "username": "John Doe",
-        "password": "myP#s$1"
+        "password": "myP@ssw0rd"
     }
 
 ### Sample Response Body
